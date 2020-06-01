@@ -27,11 +27,14 @@ function main() {
     552, 553, 554, 555, 556, 557, 558, 559, 560, 562, 564, 565, 566, 567, 568, 569, 570, 571, 572]
   const blankCells = [84, 251, 252, 253, 271, 272, 273, 311, 312, 313, 351, 352, 353, 371, 372, 373]
   const door = [286, 287, 288]
+  const bigFruit = [104,120,134,429,445,526,548]
+  let gameStarted = false
 
 
   let pacmanPosition = 463
   let direction = 'right'
   let count = 0
+  let countdown = 3
 
 
   for (let i = 0; i < width ** 2; i++) {
@@ -49,6 +52,8 @@ function main() {
       div.classList.add('blank')
     } else if (door.includes(i)) {
       div.classList.add('door')
+    } else if (bigFruit.includes(i)) {
+      div.classList.add('bigdot')
     } else {
       div.classList.add('smalldot')
     }
@@ -64,6 +69,8 @@ function main() {
   }
 
   start.addEventListener('click', () => {
+    if (gameStarted) return 
+    gameStarted = true
     cells[pacmanPosition].classList.add('pacman')
 
     function renderGame() {
@@ -96,6 +103,10 @@ function main() {
           cells[pacmanPosition + 1].classList.remove('smalldot')
           count += 10
           score.innerHTML = 'Score: ' + count
+        } else if (cells[pacmanPosition + 1].classList.contains('bigdot')) {
+          cells[pacmanPosition + 1].classList.remove('bigdot')
+          count += 100
+          score.innerHTML = 'Score: ' + count
         } else if (cells[pacmanPosition + 1].classList.contains('wall')) {
           return
         }
@@ -108,6 +119,10 @@ function main() {
           cells[pacmanPosition - 1].classList.remove('smalldot')
           count += 10
           score.innerHTML = 'Score: ' + count
+        } else if (cells[pacmanPosition - 1].classList.contains('bigdot')) {
+          cells[pacmanPosition - 1].classList.remove('bigdot')
+          count += 100
+          score.innerHTML = 'Score: ' + count
         } else if (cells[pacmanPosition - 1].classList.contains('wall')) {
           return
         }
@@ -118,6 +133,10 @@ function main() {
           cells[pacmanPosition + width].classList.remove('smalldot')
           count += 10
           score.innerHTML = 'Score: ' + count
+        } else if (cells[pacmanPosition + width].classList.contains('bigdot')) {
+          cells[pacmanPosition + width].classList.remove('bigdot')
+          count += 100
+          score.innerHTML = 'Score: ' + count
         } else if (cells[pacmanPosition + width].classList.contains('wall') || cells[pacmanPosition + width].classList.contains('door')) {
           return
         }
@@ -127,6 +146,10 @@ function main() {
         if (cells[pacmanPosition - width].classList.contains('smalldot')) {
           cells[pacmanPosition - width].classList.remove('smalldot')
           count += 10
+          score.innerHTML = 'Score: ' + count
+        } else if (cells[pacmanPosition - width].classList.contains('bigdot')) {
+          cells[pacmanPosition - width].classList.remove('bigdot')
+          count += 100
           score.innerHTML = 'Score: ' + count
         } else if (cells[pacmanPosition - width].classList.contains('wall')) {
           return

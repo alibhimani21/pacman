@@ -53,6 +53,12 @@ body {
   background-color: black;
 }
 
+.bigdot {
+  background-image: url('../images/bigdot.png');
+  background-size: contain;
+  background-color: black;
+}
+
 .door {
   background-color: white;
   border: 1px solid white;
@@ -65,3 +71,4 @@ header {
 button {
   margin-bottom: 20px;
 }
+
