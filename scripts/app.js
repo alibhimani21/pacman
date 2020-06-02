@@ -1,7 +1,7 @@
 function main() {
 
   const score = document.querySelector('#score')
-  const start = document.querySelector('#start')
+  const lives = document.querySelector('#lives')
   const grid = document.querySelector('.grid')
   const width = 25
   const cells = []
@@ -25,16 +25,23 @@ function main() {
     501, 502, 503, 504, 506, 508, 512, 516, 518, 520, 521, 522, 523,
     535, 537, 539,
     552, 553, 554, 555, 556, 557, 558, 559, 560, 562, 564, 565, 566, 567, 568, 569, 570, 571, 572]
-  const blankCells = [84, 251, 252, 253, 271, 272, 273, 311, 312, 313, 351, 352, 353, 371, 372, 373]
+  const blankCells = [84, 251, 252, 253, 271, 272, 273, 351, 352, 353, 371, 372, 373]
   const door = [286, 287, 288]
-  const bigFruit = [104,120,134,429,445,526,548]
+  const bigFruit = [104, 120, 134, 429, 445, 526, 548]
+  const pacManStart = [462]
+  const pinky = [262]
+  const greeny = [311]
+  const blueboy = [312]
+  const clyde = [313]
+  const header = document.querySelector('#header')
+
+
   let gameStarted = false
-
-
-  let pacmanPosition = 463
-  let direction = 'right'
+  let pacmanPosition = 462
+  let direction = ''
   let count = 0
-  let countdown = 3
+  let livesCount = 3
+  let dotCount = 0
 
 
   for (let i = 0; i < width ** 2; i++) {
@@ -54,115 +61,140 @@ function main() {
       div.classList.add('door')
     } else if (bigFruit.includes(i)) {
       div.classList.add('bigdot')
+      dotCount++
+    } else if (pacManStart.includes(i)) {
+      div.classList.add('pacman')
+    } else if (pinky.includes(i)) {
+      div.classList.add('pinky')
+    } else if (greeny.includes(i)) {
+      div.classList.add('greeny')
+    } else if (blueboy.includes(i)) {
+      div.classList.add('blueboy')
+    } else if (clyde.includes(i)) {
+      div.classList.add('clyde')
     } else {
       div.classList.add('smalldot')
+      dotCount++
     }
     // div.innerHTML = i
-
-
 
     grid.appendChild(div)
     cells.push(div)
 
-    score.innerHTML = 'Ready?'
+    score.innerHTML = 'Ready? Press the left or right arrow key to begin!'
 
   }
 
-  start.addEventListener('click', () => {
-    if (gameStarted) return 
-    gameStarted = true
-    cells[pacmanPosition].classList.add('pacman')
+  cells[pacmanPosition].classList.add('pacman')
 
-    function renderGame() {
-      cells.forEach(cell => {
-        cell.classList.remove('pacman')
-      })
-      cells[pacmanPosition].classList.add('pacman')
+  function renderGame() {
+    cells.forEach(cell => {
+      cell.classList.remove('pacman')
+    })
+    cells[pacmanPosition].classList.add('pacman')
+  }
+
+  // function endGame() {
+  //   if
+  // }
+
+
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowRight') {
+      direction = 'right'
+    } else if (event.key === 'ArrowLeft') {
+      direction = 'left'
+    } else if (event.key === 'ArrowDown') {
+      direction = 'down'
+    } else if (event.key === 'ArrowUp') {
+      direction = 'up'
+    }
+  })
+
+
+  setInterval(() => {
+    if (direction === 'right') {
+      if (pacmanPosition === 324) {
+        pacmanPosition -= width
+      } else if (cells[pacmanPosition + 1].classList.contains('smalldot')) {
+        cells[pacmanPosition + 1].classList.remove('smalldot')
+        count += 10
+        dotCount--
+        score.innerHTML = 'Score: ' + count
+      } else if (cells[pacmanPosition + 1].classList.contains('bigdot')) {
+        cells[pacmanPosition + 1].classList.remove('bigdot')
+        count += 100
+        dotCount--
+        score.innerHTML = 'Score: ' + count
+      } else if (cells[pacmanPosition + 1].classList.contains('wall')) {
+        return
+      }
+      pacmanPosition += 1
+      // console.log('right')
+    } else if (direction === 'left') {
+      if (pacmanPosition === 300) {
+        pacmanPosition += width
+      } else if (cells[pacmanPosition - 1].classList.contains('smalldot')) {
+        cells[pacmanPosition - 1].classList.remove('smalldot')
+        count += 10
+        dotCount--
+        score.innerHTML = 'Score: ' + count
+      } else if (cells[pacmanPosition - 1].classList.contains('bigdot')) {
+        cells[pacmanPosition - 1].classList.remove('bigdot')
+        count += 100
+        dotCount--
+        score.innerHTML = 'Score: ' + count
+      } else if (cells[pacmanPosition - 1].classList.contains('wall')) {
+        return
+      }
+      pacmanPosition -= 1
+      // console.log('left')
+    } else if (direction === 'down') {
+      if (cells[pacmanPosition + width].classList.contains('smalldot')) {
+        cells[pacmanPosition + width].classList.remove('smalldot')
+        count += 10
+        dotCount--
+        score.innerHTML = 'Score: ' + count
+      } else if (cells[pacmanPosition + width].classList.contains('bigdot')) {
+        cells[pacmanPosition + width].classList.remove('bigdot')
+        count += 100
+        dotCount--
+        score.innerHTML = 'Score: ' + count
+      } else if (cells[pacmanPosition + width].classList.contains('wall') || cells[pacmanPosition + width].classList.contains('door')) {
+        return
+      }
+      pacmanPosition += width
+      // console.log('down') 
+    } else if (direction === 'up') {
+      if (cells[pacmanPosition - width].classList.contains('smalldot')) {
+        cells[pacmanPosition - width].classList.remove('smalldot')
+        count += 10
+        dotCount--
+        score.innerHTML = 'Score: ' + count
+      } else if (cells[pacmanPosition - width].classList.contains('bigdot')) {
+        cells[pacmanPosition - width].classList.remove('bigdot')
+        count += 100
+        dotCount--
+        score.innerHTML = 'Score: ' + count
+      } else if (cells[pacmanPosition - width].classList.contains('wall')) {
+        return
+      }
+      pacmanPosition -= width
+      // console.log('up') 
+
+
     }
 
 
-
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'ArrowRight') {
-        direction = 'right'
-      } else if (event.key === 'ArrowLeft') {
-        direction = 'left'
-      } else if (event.key === 'ArrowDown') {
-        direction = 'down'
-      } else if (event.key === 'ArrowUp') {
-        direction = 'up'
-      }
-    })
+    renderGame()
+    if (dotCount === 0 || livesCount === 0) {
+      grid.classList.add('gameOver')
+      header.innerHTML = 'Game Over!'
+    }
+  }, 170)
 
 
-    setInterval(() => {
-      if (direction === 'right') {
-        if (pacmanPosition === 324) {
-          pacmanPosition -= width
-        } else if (cells[pacmanPosition + 1].classList.contains('smalldot')) {
-          cells[pacmanPosition + 1].classList.remove('smalldot')
-          count += 10
-          score.innerHTML = 'Score: ' + count
-        } else if (cells[pacmanPosition + 1].classList.contains('bigdot')) {
-          cells[pacmanPosition + 1].classList.remove('bigdot')
-          count += 100
-          score.innerHTML = 'Score: ' + count
-        } else if (cells[pacmanPosition + 1].classList.contains('wall')) {
-          return
-        }
-        pacmanPosition += 1
-        // console.log('right')
-      } else if (direction === 'left') {
-        if (pacmanPosition === 300) {
-          pacmanPosition += width
-        } else if (cells[pacmanPosition - 1].classList.contains('smalldot')) {
-          cells[pacmanPosition - 1].classList.remove('smalldot')
-          count += 10
-          score.innerHTML = 'Score: ' + count
-        } else if (cells[pacmanPosition - 1].classList.contains('bigdot')) {
-          cells[pacmanPosition - 1].classList.remove('bigdot')
-          count += 100
-          score.innerHTML = 'Score: ' + count
-        } else if (cells[pacmanPosition - 1].classList.contains('wall')) {
-          return
-        }
-        pacmanPosition -= 1
-        // console.log('left')
-      } else if (direction === 'down') {
-        if (cells[pacmanPosition + width].classList.contains('smalldot')) {
-          cells[pacmanPosition + width].classList.remove('smalldot')
-          count += 10
-          score.innerHTML = 'Score: ' + count
-        } else if (cells[pacmanPosition + width].classList.contains('bigdot')) {
-          cells[pacmanPosition + width].classList.remove('bigdot')
-          count += 100
-          score.innerHTML = 'Score: ' + count
-        } else if (cells[pacmanPosition + width].classList.contains('wall') || cells[pacmanPosition + width].classList.contains('door')) {
-          return
-        }
-        pacmanPosition += width
-        // console.log('down') 
-      } else if (direction === 'up') {
-        if (cells[pacmanPosition - width].classList.contains('smalldot')) {
-          cells[pacmanPosition - width].classList.remove('smalldot')
-          count += 10
-          score.innerHTML = 'Score: ' + count
-        } else if (cells[pacmanPosition - width].classList.contains('bigdot')) {
-          cells[pacmanPosition - width].classList.remove('bigdot')
-          count += 100
-          score.innerHTML = 'Score: ' + count
-        } else if (cells[pacmanPosition - width].classList.contains('wall')) {
-          return
-        }
-        pacmanPosition -= width
-        // console.log('up') 
-      }
-      renderGame()
-    }, 170)
-
-  })
-
-  // console.log(dots)
 
 
 

@@ -8,16 +8,22 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  background-color: black;
+  font-family: 'Righteous', cursive;
 }
 
 .grid {
   display: flex;
   flex-direction: row;
-  border: none;
+  border: 1px solid white;
   width: 600px;
   height: 600px;
   flex-wrap: wrap;
   background-color: black;
+}
+
+.gameOver {
+  display: none;
 }
 
 .cell {
@@ -70,5 +76,41 @@ header {
 
 button {
   margin-bottom: 20px;
+}
+
+.pinky {
+  background-image: url('../images/pinky.png');
+  background-size: contain;
+}
+
+.blueboy {
+  background-image: url('../images/blueboy.png');
+  background-size: contain;
+}
+
+.greeny {
+  background-image: url('../images/greeny.png');
+  background-size: contain;
+}
+
+.clyde {
+  background-image: url('../images/clyde.png');
+  background-size: contain;
+}
+
+h1 {
+  color: yellow;
+  font-size: 100px;
+  margin: 0px 0px
+}
+
+h3 {
+  color: yellow;
+  margin-top: 0px;
+}
+
+.info {
+  display: flex;
+  justify-content: space-between;
 }
 
