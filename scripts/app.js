@@ -5,6 +5,7 @@ function main() {
   const grid = document.querySelector('.grid')
   const width = 25
   const cells = []
+  const interesectionArray = [542, 544, 532, 530]
   const wallsArray = [52, 53, 54, 55, 56, 58, 59, 60, 62, 66, 68, 69, 70, 71, 72,
     77, 78, 79, 80, 81, 83, 85, 87, 91, 93, 94, 95, 96, 97,
     108, 109, 110, 112, 116,
@@ -29,19 +30,38 @@ function main() {
   const door = [286, 287, 288]
   const bigFruit = [104, 120, 134, 429, 445, 526, 548]
   const pacManStart = [462]
-  const pinky = [262]
-  const greeny = [311]
-  const blueboy = [312]
-  const clyde = [313]
+  const pinkyStart = [262]
+  const greenyStart = [311]
+  const blueboyStart = [312]
+  const clydeStart = [313]
   const header = document.querySelector('#header')
+  const ghostDirections = [- 1, + 1, + width, - width]
 
 
-  let gameStarted = false
+
   let pacmanPosition = 462
   let direction = ''
   let count = 0
   let livesCount = 3
   let dotCount = 0
+  let pinkyPosition = 262
+  let greenyPosition = 311
+  let blueboyPosition = 312
+  let clydePosition = 313
+  let pinkyDirection = ghostDirections[0]
+  let greenyDirection = ghostDirections[0]
+  let blueboyDirection = ghostDirections[0]
+  let clydeDirection = ghostDirections[0]
+  let lifeGone
+  let pinkyReady = false
+  let pinkyTimeout = false
+  let greenyReady = false
+  let greenyTimeout = false
+  let blueboyReady = false
+  let blueboyTimeout = false
+  let clydeReady = false
+  let clydeTimeout = false
+
 
 
   for (let i = 0; i < width ** 2; i++) {
@@ -64,13 +84,14 @@ function main() {
       dotCount++
     } else if (pacManStart.includes(i)) {
       div.classList.add('pacman')
-    } else if (pinky.includes(i)) {
-      div.classList.add('pinky')
-    } else if (greeny.includes(i)) {
+    } else if (greenyStart.includes(i)) {
       div.classList.add('greeny')
-    } else if (blueboy.includes(i)) {
+    } else if (pinkyStart.includes(i)) {
+      div.classList.add('pinky')
+      div.classList.add('smalldot')
+    } else if (blueboyStart.includes(i)) {
       div.classList.add('blueboy')
-    } else if (clyde.includes(i)) {
+    } else if (clydeStart.includes(i)) {
       div.classList.add('clyde')
     } else {
       div.classList.add('smalldot')
@@ -81,26 +102,41 @@ function main() {
     grid.appendChild(div)
     cells.push(div)
 
-    score.innerHTML = 'Ready? Press the left or right arrow key to begin!'
+    score.innerHTML = 'Ready? Press the left or right arrow key to start!'
 
   }
 
   cells[pacmanPosition].classList.add('pacman')
 
-  function renderGame() {
+  function renderPacman() {
     cells.forEach(cell => {
       cell.classList.remove('pacman')
+
     })
     cells[pacmanPosition].classList.add('pacman')
   }
 
-  // function endGame() {
-  //   if
-  // }
+  function renderGhosts() {
+    cells.forEach(cell => {
+      cell.classList.remove('pinky')
+      cell.classList.remove('greeny')
+      cell.classList.remove('blueboy')
+      cell.classList.remove('clyde')
+    })
+    cells[pinkyPosition].classList.add('pinky')
+    cells[greenyPosition].classList.add('greeny')
+    cells[blueboyPosition].classList.add('blueboy')
+    cells[clydePosition].classList.add('clyde')
+  }
+
+
+
+
 
 
 
   document.addEventListener('keydown', (event) => {
+    lifeGone = false
     if (event.key === 'ArrowRight') {
       direction = 'right'
     } else if (event.key === 'ArrowLeft') {
@@ -111,6 +147,8 @@ function main() {
       direction = 'up'
     }
   })
+
+  lives.innerHTML = 'Lives: ' + livesCount
 
 
   setInterval(() => {
@@ -127,6 +165,12 @@ function main() {
         count += 100
         dotCount--
         score.innerHTML = 'Score: ' + count
+      } else if (cells[pacmanPosition + 1].classList.contains('greeny') || cells[pacmanPosition + 1].classList.contains('pinky') || cells[pacmanPosition + 1].classList.contains('blueboy') || cells[pacmanPosition + 1].classList.contains('clyde')) {
+        livesCount -= 1
+        direction = 'down'
+        pacmanPosition = 461
+        lives.innerHTML = 'Lives ' + livesCount
+        score.innerHTML = 'You lost a life! Press the left or right arrow key to resume!'
       } else if (cells[pacmanPosition + 1].classList.contains('wall')) {
         return
       }
@@ -145,6 +189,15 @@ function main() {
         count += 100
         dotCount--
         score.innerHTML = 'Score: ' + count
+      } else if (cells[pacmanPosition - 1].classList.contains('greeny') || cells[pacmanPosition - 1].classList.contains('pinky') || cells[pacmanPosition - 1].classList.contains('blueboy') || cells[pacmanPosition - 1].classList.contains('clyde')) {
+        cells[pacmanPosition].classList.remove('pacman')
+        livesCount -= 1
+        direction = 'down'
+        pacmanPosition = 463
+        cells[pacmanPosition].classList.add('pacman')
+        console.log('minus')
+        lives.innerHTML = 'Lives ' + livesCount
+        score.innerHTML = 'You lost a life! Press the left or right arrow key to resume!'
       } else if (cells[pacmanPosition - 1].classList.contains('wall')) {
         return
       }
@@ -161,6 +214,12 @@ function main() {
         count += 100
         dotCount--
         score.innerHTML = 'Score: ' + count
+      } else if (cells[pacmanPosition + width].classList.contains('greeny') || cells[pacmanPosition + width].classList.contains('pinky') || cells[pacmanPosition + width].classList.contains('blueboy') || cells[pacmanPosition + width].classList.contains('clyde')) {
+        livesCount -= 1
+        direction = 'down'
+        pacmanPosition = 462
+        lives.innerHTML = 'Lives ' + livesCount
+        score.innerHTML = 'You lost a life! Press the left or right arrow key to resume!'
       } else if (cells[pacmanPosition + width].classList.contains('wall') || cells[pacmanPosition + width].classList.contains('door')) {
         return
       }
@@ -177,6 +236,13 @@ function main() {
         count += 100
         dotCount--
         score.innerHTML = 'Score: ' + count
+      } else if (cells[pacmanPosition - width].classList.contains('greeny') || cells[pacmanPosition - width].classList.contains('pinky') || cells[pacmanPosition - width].classList.contains('blueboy') || cells[pacmanPosition - width].classList.contains('clyde')) {
+        livesCount -= 1
+        console.log('minus one')
+        direction = 'down'
+        pacmanPosition = 462
+        lives.innerHTML = 'Lives ' + livesCount
+        score.innerHTML = 'You lost a life! Press the left or right arrow key to resume!'
       } else if (cells[pacmanPosition - width].classList.contains('wall')) {
         return
       }
@@ -187,12 +253,192 @@ function main() {
     }
 
 
-    renderGame()
-    if (dotCount === 0 || livesCount === 0) {
-      grid.classList.add('gameOver')
-      header.innerHTML = 'Game Over!'
+    renderPacman()
+
+    if (dotCount === 0) {
+
+      // ! animation
+      // setTimeout(() => {
+      //   cells[wallsArray].classList.remove('wall')
+      //   cells[wallsArray].classList.add('wallEnd')
+      // }, 500)
+
+      setTimeout(() => {
+        grid.classList.add('gameOver')
+        grid.classList.add('victory')
+
+        header.innerHTML = 'You Win!'
+        score.innerHTML = 'Final Score: ' + count
+        lives.innerHTML = 'Refresh your browser to play again!'
+      }, 800)
     }
-  }, 170)
+
+
+  }, 210)
+
+
+  function collisionCheck(ghostDirection, ghostPosition) {
+    if (cells[ghostPosition + ghostDirection].classList.contains('wall')) {
+      return true
+    }
+    return false
+  }
+
+  function randomDirection(ghostDirection, ghostPosition) {
+    const oppositeDirection = ghostDirection * -1
+    const filteredGhostDirections = ghostDirections.filter(currentDirection => {
+      return currentDirection !== ghostDirection
+    }).filter(test => test !== oppositeDirection)
+    const neighbourCells = []
+    filteredGhostDirections.forEach(alisdirection => {
+      neighbourCells.push(ghostPosition + alisdirection)
+    })
+    const validNeighbours = neighbourCells.filter(cell => !cells[cell].classList.contains('wall') || !cells[cell].classList.contains('door'))
+    const randomNeighbour = validNeighbours[Math.floor(Math.random() * validNeighbours.length)]
+    console.log(filteredGhostDirections)
+    console.log(neighbourCells)
+    console.log(validNeighbours)
+    return (randomNeighbour - ghostPosition)
+
+  }
+
+
+  // Pinky Position
+  setInterval(() => {
+
+    if (!pinkyTimeout) {
+      pinkyTimeout = true 
+      setTimeout(() => {
+        pinkyPosition = 262
+        pinkyReady = true
+      }, 500)
+    }
+    if (!pinkyReady) {
+      return
+    }
+    if (interesectionArray.includes(pinkyPosition)) {
+      pinkyDirection = randomDirection(pinkyDirection, pinkyPosition)
+    }
+    if (collisionCheck(pinkyDirection, pinkyPosition)) {
+      pinkyDirection = randomDirection(pinkyDirection, pinkyPosition)
+    } else {
+      pinkyPosition += pinkyDirection
+    }
+    renderGhosts()
+  }, 240)
+
+
+  // Greeny
+
+
+  setInterval(() => {
+    if (!greenyTimeout) {
+      greenyTimeout = true 
+      setTimeout(() => {
+        greenyPosition = 261
+        greenyReady = true
+      }, 6000)
+    }
+    if (!greenyReady) {
+      return
+    }
+    if (interesectionArray.includes(greenyPosition)) {
+      greenyDirection = randomDirection(greenyDirection, greenyPosition)
+    }
+    if (collisionCheck(greenyDirection, greenyPosition)) {
+      greenyDirection = randomDirection(greenyDirection, greenyPosition)
+    } else {
+      greenyPosition += greenyDirection
+    }
+    renderGhosts()
+  }, 240)
+
+
+  // blueboy
+
+  setInterval(() => {
+    if (!blueboyTimeout) {
+      blueboyTimeout = true 
+      setTimeout(() => {
+        blueboyPosition = 262
+        blueboyReady = true
+      }, 3000)
+    }
+    if (!blueboyReady) {
+      return
+    }
+    if (interesectionArray.includes(blueboyPosition)) {
+      blueboyDirection = randomDirection(blueboyDirection, blueboyPosition)
+    }
+    if (collisionCheck(blueboyDirection, blueboyPosition)) {
+      blueboyDirection = randomDirection(blueboyDirection, blueboyPosition)
+    } else {
+      blueboyPosition += blueboyDirection
+    }
+    renderGhosts()
+  }, 210)
+
+
+
+  // clyde
+  setInterval(() => {
+
+    if (!clydeTimeout) {
+      clydeTimeout = true 
+      setTimeout(() => {
+        clydePosition = 263
+        clydeReady = true
+      }, 9000)
+    }
+    if (!clydeReady) {
+      return
+    }
+    if (interesectionArray.includes(clydePosition)) {
+      clydeDirection = randomDirection(clydeDirection, clydePosition)
+    }
+    if (collisionCheck(clydeDirection, clydePosition)) {
+      clydeDirection = randomDirection(clydeDirection, clydePosition)
+    } else {
+      clydePosition += clydeDirection
+    }
+    renderGhosts()
+  }, 270)
+
+
+  setInterval(() => {
+    if (pacmanPosition === pinkyPosition || pacmanPosition === greenyPosition || pacmanPosition === blueboyPosition || pacmanPosition === clydePosition) {
+      livesCount--
+      lives.innerHTML = 'Lives: ' + livesCount
+      pacmanPosition = 462
+      direction = 'up'
+      pinkyPosition = 262
+      greenyPosition = 311
+      blueboyPosition = 312
+      clydePosition = 313
+      renderGhosts()
+      renderPacman()
+      pinkyReady = false
+      pinkyTimeout = false
+      greenyReady = false
+      greenyTimeout = false
+      blueboyReady = false
+      blueboyTimeout = false
+      clydeReady = false
+      clydeTimeout = false
+
+
+    }
+    if (livesCount === 0) {
+      grid.classList.add('gameOver')
+
+
+      header.innerHTML = 'Game Over!'
+      score.innerHTML = 'Final Score: ' + count
+      lives.innerHTML = 'Refresh your browser to play again!'
+    }
+  }, 30)
+
+
 
 
 
