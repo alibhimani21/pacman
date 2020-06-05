@@ -22,9 +22,6 @@ body {
   background-color: black;
 }
 
-.gameOver {
-  display: none;
-}
 
 .cell {
   background-color: black;
@@ -38,8 +35,33 @@ body {
   background-color: black;
 }
 
-.pacman {
+.pacmanup {
+  background-image: url('../images/pacmanup.png');
+  background-size: contain;
+}
+
+.pacmandown {
+  background-image: url('../images/pacmandown.png');
+  background-size: contain;
+}
+
+.pacmanleft {
+  background-image: url('../images/pacmanleft.png');
+  background-size: contain;
+}
+
+.pacmanright {
+  background-image: url('../images/pacmanright.png');
+  background-size: contain;
+}
+
+.pacmanclosed {
   background-color: yellow;
+  border-radius: 100%;
+}
+
+.pacman {
+  background-color:yellow;
   border-radius: 100%;
 }
 
@@ -98,6 +120,11 @@ button {
   background-size: contain;
 }
 
+.scared {
+  background-image: url('../images/scared.png');
+  background-size: contain;
+}
+
 h1 {
   color: yellow;
   font-size: 100px;
@@ -115,9 +142,7 @@ h3 {
   border-radius: 20%;
 }
 
-victory {
-  width: 600px;
-  height: 300px;
-  background-image: url('/images/victory.png');
-  background-size: contain;
+.gameOver {
+  display: none;
 }
+
